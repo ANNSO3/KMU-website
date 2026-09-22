@@ -1,0 +1,5 @@
+# Im Repository gilt LF, unabhaengig vom Betriebssystem.
+* text=auto eol=lf
+
+*.png  binary
+*.webp binary
