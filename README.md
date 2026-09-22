@@ -16,7 +16,8 @@ Erzeugt aus den Design-Canvas-Prototypen im Ordner
 | `impressum.html`        | Impressum                                                     |
 | `404.html`              | Fehlerseite (GitHub Pages liefert sie automatisch aus)        |
 | `assets/style.css`      | Sämtliche Stile                                               |
-| `assets/main.js`        | Slider, Fragen, Kontakt-Umschalter, Formulare, Cal.com, Hero  |
+| `assets/main.js`        | Slider, Fragen, Kontakt-Umschalter, Formulare, Cal.com        |
+| `assets/dot-field.js`   | Punkteraster im Hero (Web Component <dot-field>)              |
 | `assets/consent.js`     | Cookie-Banner und Google Analytics (auf allen Seiten)         |
 | `bilder/`               | Bilder (PNG als Rückfallebene, WebP für die Auslieferung)     |
 | `arrow-narrow-right.svg`| Pfeil-Icon als eigenständige Datei                            |

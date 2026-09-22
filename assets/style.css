@@ -59,9 +59,6 @@ html.js-reveal [data-reveal].is-in {
 }
 .skip-link:focus { top: 16px; color: #FFFFFF; }
 
-/* --- Dekorativer Punkteraster im Hero --- */
-canvas.dot-field { display: block; width: 100%; height: 100%; }
-
 /* Der Seitentitel der Rechtstexte ist jetzt ein <h1>. Der Browser gäbe ihm
    einen Standardabstand, den es im Entwurf nicht gab. */
 .seitentitel { margin: 0; }
