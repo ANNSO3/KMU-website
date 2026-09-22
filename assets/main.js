@@ -320,8 +320,8 @@
   }
 
   function initCal() {
-    var termin = document.getElementById('termin');
-    if (!termin) return;
+    var kontakt = document.getElementById('kontakt');
+    if (!kontakt) return;
     if (!('IntersectionObserver' in window)) { calLaden(); return; }
 
     var io = new IntersectionObserver(function (entries) {
@@ -329,7 +329,7 @@
       io.disconnect();
       calLaden();
     }, { rootMargin: '200px 0px' });
-    io.observe(termin);
+    io.observe(kontakt);
   }
 
   /* ---------------------------------------------------------------- Punkteraster
