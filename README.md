@@ -31,8 +31,8 @@ Zwei Landepunkte, je einer pro QR-Code:
 
 | Adresse für den QR-Code | Landet auf | Zweck |
 | --- | --- | --- |
-| `https://annikasoto.de/qr` | Startseite | allgemeiner Code |
-| `https://annikasoto.de/qr-entwurf` | Startseite, Abschnitt Entwurf | Code direkt aufs Formular |
+| `https://annikasoto.de/startseite-qr` | Startseite | allgemeiner Code |
+| `https://annikasoto.de/entwurf-qr` | Startseite, Abschnitt Entwurf | Code direkt aufs Formular |
 
 Beide leiten sofort weiter und hängen UTM-Parameter an. Der Umweg über einen
 eigenen Pfad hat einen Grund: Der Aufruf wird von Cloudflare gezählt, bevor
@@ -43,7 +43,9 @@ nach Pfad. In Google Analytics tauchen sie zusätzlich als Kampagne
 haben.
 
 Weitere Codes: in `build-scripts/qr_weiterleitungen.py` eine Zeile zur Liste
-`ZIELE` hinzufügen und neu bauen.
+`ZIELE` hinzufügen und neu bauen. Wird ein Pfad dort umbenannt oder
+gestrichen, entfernt der nächste Lauf den alten Ordner von selbst — erkannt
+an einem Marker in der Datei, andere Ordner bleiben unberührt.
 
 ## Cache und Fingerabdrücke
 
