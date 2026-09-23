@@ -25,6 +25,25 @@ Erzeugt aus den Design-Canvas-Prototypen im Ordner
 | `.nojekyll`             | Schaltet die Jekyll-Verarbeitung von GitHub Pages ab          |
 | `robots.txt`, `sitemap.xml` | Für Suchmaschinen                                         |
 
+## Cache und Fingerabdrücke
+
+Cloudflare und die Browser cachen CSS und JavaScript vier Stunden. Damit
+Änderungen trotzdem sofort ankommen, hängt der Build an jede dieser Adressen
+einen Fingerabdruck des Dateiinhalts:
+
+```html
+<link rel="stylesheet" href="assets/style.css?v=c3b5f91a">
+```
+
+Ändert sich der Inhalt, ändert sich die Adresse – alle sehen die neue Fassung
+sofort, ohne Cache-Leerung. Ändert sich nichts, bleibt die Adresse gleich und
+der Cache greift weiter. HTML wird von Cloudflare ohnehin nicht gecacht
+(`cf-cache-status: DYNAMIC`), Textänderungen sind also immer sofort sichtbar.
+
+Bilder tragen keinen Fingerabdruck. Wird ein Bild ausgetauscht, entweder den
+Dateinamen ändern oder in Cloudflare unter Caching → Configuration einmal
+"Purge Everything" drücken.
+
 ## Örtlich ansehen
 
 ```bash
@@ -62,11 +81,18 @@ Das Repository ist [ANNSO3/KMU-website](https://github.com/ANNSO3/KMU-website),
 eigene Domain `annikasoto.de` ist eingetragen und `CNAME` liegt im
 Wurzelverzeichnis.
 
-Offen ist nur noch **„Enforce HTTPS“**: GitHub stellt das Zertifikat erst aus,
-wenn die Domain eine Weile erreichbar war. Sobald der Haken anklickbar ist
-(Settings → Pages), setzen.
+In den Pages-Einstellungen steht dauerhaft die Fehlermeldung *„Both
+annikasoto.de and its alternate name are improperly configured"*, und
+**„Enforce HTTPS" bleibt ausgegraut. Beides ist erwartet und kann ignoriert
+werden.** Seit die Domain über Cloudflare läuft (siehe Schritt 2), sieht
+GitHubs Prüfung Cloudflare-Adressen statt der eigenen und meldet deshalb
+Fehlkonfiguration. Das Zertifikat kommt von Cloudflare, GitHubs eigenes wird
+nicht gebraucht.
 
-### 2. DNS — liegt bei Cloudflare, nicht beim Registrar
+Die Datei `CNAME` muss trotzdem im Wurzelverzeichnis bleiben – daran erkennt
+GitHub, welche Seite unter diesem Domainnamen auszuliefern ist.
+
+### 2. DNS und HTTPS — läuft über Cloudflare
 
 **Wichtig, wenn Einträge geändert werden:** Die Nameserver der Domain zeigen
 auf `apollo.ns.cloudflare.com` und `paris.ns.cloudflare.com`. Damit ist
@@ -77,30 +103,35 @@ Angabe, welche Nameserver zuständig sind.
 
 Soll-Zustand der Zone:
 
-| Typ     | Name  | Ziel                    | Proxy    |
-| ------- | ----- | ----------------------- | -------- |
-| `A`     | `@`   | `185.199.108.153`       | DNS only |
-| `A`     | `@`   | `185.199.109.153`       | DNS only |
-| `A`     | `@`   | `185.199.110.153`       | DNS only |
-| `A`     | `@`   | `185.199.111.153`       | DNS only |
-| `AAAA`  | `@`   | `2606:50c0:8000::153`   | DNS only |
-| `AAAA`  | `@`   | `2606:50c0:8001::153`   | DNS only |
-| `AAAA`  | `@`   | `2606:50c0:8002::153`   | DNS only |
-| `AAAA`  | `@`   | `2606:50c0:8003::153`   | DNS only |
-| `CNAME` | `www` | `annso3.github.io`      | DNS only |
+| Typ     | Name  | Ziel                    | Proxy        |
+| ------- | ----- | ----------------------- | ------------ |
+| `A`     | `@`   | `185.199.108.153`       | **Proxied**  |
+| `A`     | `@`   | `185.199.109.153`       | **Proxied**  |
+| `A`     | `@`   | `185.199.110.153`       | **Proxied**  |
+| `A`     | `@`   | `185.199.111.153`       | **Proxied**  |
+| `AAAA`  | `@`   | `2606:50c0:8000::153`   | **Proxied**  |
+| `AAAA`  | `@`   | `2606:50c0:8001::153`   | **Proxied**  |
+| `AAAA`  | `@`   | `2606:50c0:8002::153`   | **Proxied**  |
+| `AAAA`  | `@`   | `2606:50c0:8003::153`   | **Proxied**  |
+| `CNAME` | `www` | `annso3.github.io`      | **Proxied**  |
+| `MX`, `TXT` | –  | IONOS, siehe Schritt 3  | DNS only     |
 
-Die MX-, SPF- und DMARC-Einträge bleiben unangetastet, siehe Schritt 3.
+**HTTPS kommt von Cloudflare, nicht von GitHub.** GitHub hat für diese Domain
+über Tage kein Zertifikat ausgestellt – die Prüfung schlug trotz nachweislich
+korrektem DNS immer wieder fehl. Deshalb läuft der Verkehr jetzt durch
+Cloudflare, das sein eigenes Zertifikat ausliefert.
 
-**Die graue Wolke ist derzeit richtig.** GitHub stellt das
-Let's-Encrypt-Zertifikat nur aus, wenn es die Domain direkt erreicht. Erst wenn
-„Enforce HTTPS“ aktiv ist, auf die orange Wolke wechseln und den
-SSL/TLS-Modus auf **Full (strict)** stellen. In der anderen Reihenfolge bleibt
-das Zertifikat hängen.
+Zugehörige Einstellungen:
 
-> Falls DNS später zum Registrar umziehen soll: Das ginge, bedeutet aber, alle
-> Einträge dort neu anzulegen, und die Zertifikatsanfrage beginnt von vorn.
-> Cloudflare Email Routing stünde dann ebenfalls nicht mehr zur Verfügung —
-> was hier aber egal ist, weil die E-Mail über IONOS läuft.
+- SSL/TLS → Overview → Encryption mode: **Full**
+  Nicht „Flexible" (Strecke zu GitHub unverschlüsselt) und nicht
+  „Full (strict)" – strict scheitert, weil GitHubs Zertifikat nicht auf diese
+  Domain lautet. „Full" verschlüsselt die Strecke, prüft das Zertifikat aber
+  nicht.
+- SSL/TLS → Edge Certificates → **Always Use HTTPS**: an.
+
+Sollte GitHub irgendwann doch ein Zertifikat ausstellen, kann auf
+**Full (strict)** hochgestuft werden.
 
 ### 3. E-Mail — läuft über IONOS
 
