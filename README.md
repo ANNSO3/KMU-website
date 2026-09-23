@@ -167,7 +167,7 @@ Zugehörige Einstellungen:
 Sollte GitHub irgendwann doch ein Zertifikat ausstellen, kann auf
 **Full (strict)** hochgestuft werden.
 
-### 3. E-Mail — läuft über IONOS
+### 3. E-Mail — erledigt, läuft über IONOS
 
 **Cloudflare Email Routing wird nicht gebraucht und darf nicht eingerichtet
 werden.** Die Domain ist mailseitig bereits vollständig bei IONOS aufgesetzt:
@@ -183,12 +183,10 @@ Email Routing würde diese MX-Einträge ersetzen und damit das bestehende
 Postfach vom Netz nehmen. Im Cloudflare-DNS also nichts an MX, SPF oder DMARC
 ändern.
 
-Stattdessen `anfrage@annikasoto.de` im IONOS-Kundenmenü als Adresse oder Alias
-auf das vorhandene Postfach legen. Kein DNS-Eingriff, keine Weiterleitung,
-keine Zusatzkosten — und Post von dieser Adresse ist durch das bestehende SPF
-gedeckt.
+`anfrage@annikasoto.de` ist im IONOS-Kundenmenü angelegt. Kein DNS-Eingriff
+nötig, Post von dieser Adresse ist durch das bestehende SPF gedeckt.
 
-Zwei Verbesserungen, beide im IONOS-Kundenmenü und beide optional:
+Zwei optionale Verbesserungen, beide im IONOS-Kundenmenü:
 
 - **DKIM einschalten.** Derzeit ist keiner der üblichen Selektoren gesetzt.
   DKIM verbessert die Zustellbarkeit deutlich, gerade bei Erstkontakt-Mails an
@@ -282,9 +280,12 @@ Dann im Browser: <https://annikasoto.de> aufrufen, Impressum und Datenschutz
   Umsetzung angepasst: Einwilligung nach § 25 Abs. 1 TDDDG, Widerruf über die
   Fußzeile, 14 Monate Aufbewahrung, abgeschaltete Werbefunktionen. Bitte
   gegenlesen und prüfen, ob die Angaben zu deinem GA-Konto passen.
-- **Datenschutzerklärung, Abschnitt 3 (Hosting).** Neu ergänzt, mit GitHub
-  Pages, Fastly und Cloudflare. Vor dem Livegang bitte gegenlesen und prüfen,
-  ob zu allen dreien tatsächlich ein Auftragsverarbeitungsvertrag vorliegt.
+- **Datenschutzerklärung, Abschnitt 3 (Hosting).** Beschreibt GitHub Pages,
+  Fastly und Cloudflare in seiner tatsächlichen Rolle als CDN im Anfrageweg,
+  einschließlich des Hinweises, dass die Verschlüsselung bei Cloudflare endet.
+  Bitte gegenlesen und prüfen, ob zu allen dreien ein
+  Auftragsverarbeitungsvertrag vorliegt — bei Cloudflare unter
+  Konto → Rechtliches, bei GitHub in den Kontoeinstellungen.
 - **Schriftart.** Inter Tight wird von Google Fonts geladen, wie im Entwurf
   angelegt; Abschnitt 7 der Datenschutzerklärung deckt das ab. Wer ganz ohne
   Verbindung zu Google auskommen möchte, legt die Schrift nach `assets/` und
