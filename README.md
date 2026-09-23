@@ -25,6 +25,26 @@ Erzeugt aus den Design-Canvas-Prototypen im Ordner
 | `.nojekyll`             | Schaltet die Jekyll-Verarbeitung von GitHub Pages ab          |
 | `robots.txt`, `sitemap.xml` | Für Suchmaschinen                                         |
 
+## QR-Codes
+
+Zwei Landepunkte, je einer pro QR-Code:
+
+| Adresse für den QR-Code | Landet auf | Zweck |
+| --- | --- | --- |
+| `https://annikasoto.de/qr` | Startseite | allgemeiner Code |
+| `https://annikasoto.de/qr-entwurf` | Startseite, Abschnitt Entwurf | Code direkt aufs Formular |
+
+Beide leiten sofort weiter und hängen UTM-Parameter an. Der Umweg über einen
+eigenen Pfad hat einen Grund: Der Aufruf wird von Cloudflare gezählt, bevor
+der Cookie-Hinweis erscheint. Die Zahl der Scans steht damit unabhängig von
+einer Einwilligung in **Cloudflare → Analytics & Logs → Traffic**, aufgeschlüsselt
+nach Pfad. In Google Analytics tauchen sie zusätzlich als Kampagne
+`startseite` bzw. `entwurf` auf — dort aber nur für Besucher, die zugestimmt
+haben.
+
+Weitere Codes: in `build-scripts/qr_weiterleitungen.py` eine Zeile zur Liste
+`ZIELE` hinzufügen und neu bauen.
+
 ## Cache und Fingerabdrücke
 
 Cloudflare und die Browser cachen CSS und JavaScript vier Stunden. Damit
