@@ -66,33 +66,71 @@ Offen ist nur noch **„Enforce HTTPS“**: GitHub stellt das Zertifikat erst au
 wenn die Domain eine Weile erreichbar war. Sobald der Haken anklickbar ist
 (Settings → Pages), setzen.
 
-### 2. Cloudflare DNS — steht
+### 2. DNS — liegt bei Cloudflare, nicht beim Registrar
 
-Zone und Nameserver (`apollo` / `paris.ns.cloudflare.com`) sind gesetzt,
-`annikasoto.de` und `www` zeigen auf die vier GitHub-Pages-Adressen. Zur
-Kontrolle:
+**Wichtig, wenn Einträge geändert werden:** Die Nameserver der Domain zeigen
+auf `apollo.ns.cloudflare.com` und `paris.ns.cloudflare.com`. Damit ist
+Cloudflare autoritativ — alle Einträge gehören ins Cloudflare-Dashboard.
+Einträge, die beim Registrar angelegt werden, haben keinerlei Wirkung, weil
+sie nie abgefragt werden. Der Registrar hält nur die Delegation, also die
+Angabe, welche Nameserver zuständig sind.
 
-| Typ     | Name | Ziel                          | Proxy |
-| ------- | ---- | ----------------------------- | ----- |
-| `A`     | `@`  | `185.199.108.153`             | an    |
-| `A`     | `@`  | `185.199.109.153`             | an    |
-| `A`     | `@`  | `185.199.110.153`             | an    |
-| `A`     | `@`  | `185.199.111.153`             | an    |
-| `CNAME` | `www`| `<github-benutzername>.github.io` | an |
+Soll-Zustand der Zone:
 
-**Der Proxy steht derzeit auf „DNS only“ (graue Wolke) – und das ist im Moment
-richtig so.** GitHub stellt das Let's-Encrypt-Zertifikat nur aus, wenn es die
-Domain direkt erreicht. Erst wenn „Enforce HTTPS“ aktiv ist, die orange Wolke
-einschalten und den SSL/TLS-Modus auf **Full (strict)** stellen. Andersherum
-bleibt das Zertifikat hängen.
+| Typ     | Name  | Ziel                    | Proxy    |
+| ------- | ----- | ----------------------- | -------- |
+| `A`     | `@`   | `185.199.108.153`       | DNS only |
+| `A`     | `@`   | `185.199.109.153`       | DNS only |
+| `A`     | `@`   | `185.199.110.153`       | DNS only |
+| `A`     | `@`   | `185.199.111.153`       | DNS only |
+| `AAAA`  | `@`   | `2606:50c0:8000::153`   | DNS only |
+| `AAAA`  | `@`   | `2606:50c0:8001::153`   | DNS only |
+| `AAAA`  | `@`   | `2606:50c0:8002::153`   | DNS only |
+| `AAAA`  | `@`   | `2606:50c0:8003::153`   | DNS only |
+| `CNAME` | `www` | `annso3.github.io`      | DNS only |
 
-### 3. E-Mail
+Die MX-, SPF- und DMARC-Einträge bleiben unangetastet, siehe Schritt 3.
 
-Cloudflare Email Routing für `anfrage@annikasoto.de` auf das private Postfach
-einrichten. Alternative mit echtem Postfach: mailbox.org (rund 2,50 € im Monat).
+**Die graue Wolke ist derzeit richtig.** GitHub stellt das
+Let's-Encrypt-Zertifikat nur aus, wenn es die Domain direkt erreicht. Erst wenn
+„Enforce HTTPS“ aktiv ist, auf die orange Wolke wechseln und den
+SSL/TLS-Modus auf **Full (strict)** stellen. In der anderen Reihenfolge bleibt
+das Zertifikat hängen.
 
-Damit weitergeleitete Post nicht im Spam landet, die von Cloudflare
-vorgeschlagenen SPF- und DMARC-Einträge mit übernehmen.
+> Falls DNS später zum Registrar umziehen soll: Das ginge, bedeutet aber, alle
+> Einträge dort neu anzulegen, und die Zertifikatsanfrage beginnt von vorn.
+> Cloudflare Email Routing stünde dann ebenfalls nicht mehr zur Verfügung —
+> was hier aber egal ist, weil die E-Mail über IONOS läuft.
+
+### 3. E-Mail — läuft über IONOS
+
+**Cloudflare Email Routing wird nicht gebraucht und darf nicht eingerichtet
+werden.** Die Domain ist mailseitig bereits vollständig bei IONOS aufgesetzt:
+
+```
+MX     10 mx00.ionos.de
+MX     10 mx01.ionos.de
+SPF    v=spf1 include:_spf-eu.ionos.com ~all
+DMARC  v=DMARC1; p=none;
+```
+
+Email Routing würde diese MX-Einträge ersetzen und damit das bestehende
+Postfach vom Netz nehmen. Im Cloudflare-DNS also nichts an MX, SPF oder DMARC
+ändern.
+
+Stattdessen `anfrage@annikasoto.de` im IONOS-Kundenmenü als Adresse oder Alias
+auf das vorhandene Postfach legen. Kein DNS-Eingriff, keine Weiterleitung,
+keine Zusatzkosten — und Post von dieser Adresse ist durch das bestehende SPF
+gedeckt.
+
+Zwei Verbesserungen, beide im IONOS-Kundenmenü und beide optional:
+
+- **DKIM einschalten.** Derzeit ist keiner der üblichen Selektoren gesetzt.
+  DKIM verbessert die Zustellbarkeit deutlich, gerade bei Erstkontakt-Mails an
+  Firmen, die schärfer filtern.
+- **DMARC später verschärfen.** `p=none` beobachtet nur und schützt nicht. Ein
+  Wechsel auf `p=quarantine` lohnt sich, sobald DKIM läuft — vorher nicht,
+  sonst landet eigene Post im Spam.
 
 ### 4. Cal.com
 
@@ -168,6 +206,9 @@ Dann im Browser: <https://annikasoto.de> aufrufen, Impressum und Datenschutz
 
 ## Offene Punkte für Annika
 
+- **Vier AAAA-Einträge fehlen in Cloudflare.** Solange sie fehlen, geht
+  GitHubs Domain-Prüfung nicht durch und die Zertifikatsanfrage startet nicht.
+  Werte stehen in Schritt 2.
 - **Drei Einstellungen im Google-Konto** fehlen noch: Aufbewahrungsdauer,
   Auftragsverarbeitungsvertrag, Google-Signale. Siehe Schritt 5 oben. Ohne sie
   stimmt Abschnitt 8 der Datenschutzerklärung nicht mit der Wirklichkeit
