@@ -82,14 +82,68 @@ html.js-reveal [data-reveal].is-in {
 }
 
 /* ---------------------------------------------------------------------------
-   ZUSATZ (nicht aus dem Design-Canvas): Auf schmalen Bildschirmen umbricht die
-   Navigation auf drei Zeilen. Als klebende Leiste würde sie dort dauerhaft
-   184 px – knapp ein Viertel des Bildschirms – verdecken. Deshalb scrollt die
-   Kopfzeile unter 640 px mit. Am Aussehen ändert sich nichts.
-   Zum Entfernen: diesen Block löschen.
+   ZUSATZ (nicht aus dem Design-Canvas): Menü für schmale Bildschirme.
+
+   Die Navigation hat fünf Einträge und umbricht unter rund 710 px auf drei
+   Zeilen – als klebende Leiste würde sie dort ein Viertel des Bildschirms
+   verdecken. Deshalb wandert sie unter 768 px hinter einen Burger-Knopf und
+   klappt darunter auf. Die Leiste bleibt dadurch einzeilig und kann klebend
+   bleiben. Am Desktop-Aussehen ändert sich nichts.
    --------------------------------------------------------------------------- */
-@media (max-width: 639px) {
-  body > div > header[class] { position: static; }
+.menue-knopf {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: -6px -10px -6px 0;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 999px;
+  color: #242426;
+  cursor: pointer;
+  transition: background 200ms ease;
+}
+/* Nur auf Geräten mit echtem Zeiger – nach einem Tipp auf dem Handy bliebe
+   die Hervorhebung sonst hängen, bis woanders hingetippt wird. */
+@media (hover: hover) {
+  .menue-knopf:hover { background: #EBEFF5; }
+}
+
+/* Burger wird beim Öffnen zum Kreuz. */
+.menue-strich {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 220ms cubic-bezier(.22,.61,.36,1), opacity 160ms ease;
+}
+header[data-menue="offen"] .menue-strich-1 { transform: translateY(5px) rotate(45deg); }
+header[data-menue="offen"] .menue-strich-2 { opacity: 0; }
+header[data-menue="offen"] .menue-strich-3 { transform: translateY(-5px) rotate(-45deg); }
+
+@media (max-width: 767px) {
+  .menue-knopf { display: inline-flex; }
+
+  /* Eigene Zeile unterhalb der Leiste, standardmäßig zu. */
+  #hauptnavigation {
+    display: none;
+    flex-basis: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(36,36,38,0.10);
+  }
+  header[data-menue="offen"] #hauptnavigation { display: flex; }
+
+  /* Großzügige Trefferflächen, ohne die Schrift zu verändern. */
+  #hauptnavigation > a { padding: 11px 2px; }
+  #hauptnavigation > a[class*="s9"] { margin-top: 8px; padding: 11px 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menue-strich { transition: none; }
 }
 
 /* --- Kontakt: Entweder-oder-Umschalter --- */

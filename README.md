@@ -18,6 +18,7 @@ Erzeugt aus den Design-Canvas-Prototypen im Ordner
 | `assets/style.css`      | Sämtliche Stile                                               |
 | `assets/main.js`        | Slider, Fragen, Kontakt-Umschalter, Formulare, Cal.com        |
 | `assets/dot-field.js`   | Punkteraster im Hero (Web Component <dot-field>)              |
+| `assets/menue.js`       | Burger-Menü unter 768 px (auf allen Seiten)                  |
 | `assets/consent.js`     | Cookie-Banner und Google Analytics (auf allen Seiten)         |
 | `bilder/`               | Bilder (PNG als Rückfallebene, WebP für die Auslieferung)     |
 | `arrow-narrow-right.svg`| Pfeil-Icon als eigenständige Datei                            |
@@ -88,8 +89,19 @@ worden:
 
 Wer eine Farbe oder einen Abstand ändern möchte, sucht die Klasse am Element
 und ändert sie in `assets/style.css`. Ergänzungen, die es im Prototyp nicht
-gab (Tastaturbedienung, Trefferflächen, Kopfzeile auf dem Handy), stehen
-gesammelt oben in der Datei und sind dort einzeln kommentiert.
+gab (Tastaturbedienung, Trefferflächen, Burger-Menü), stehen gesammelt oben
+in der Datei und sind dort einzeln kommentiert.
+
+### Menü auf schmalen Bildschirmen
+
+Die Navigation hat fünf Einträge und umbricht unter rund 710 px auf drei
+Zeilen. Unter **768 px** wandert sie deshalb hinter einen Burger-Knopf und
+klappt darunter auf – die Kopfzeile bleibt einzeilig (70 statt 184 px) und
+kann klebend bleiben. Am Desktop-Aussehen ändert sich nichts.
+
+Das Menü schließt bei Klick auf einen Eintrag, mit Escape und beim Tippen
+daneben. Geöffnet wird über `data-menue="offen"` an der Kopfzeile, das
+Aussehen steckt vollständig in `assets/style.css`.
 
 ## Was noch zu tun ist
 
