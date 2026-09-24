@@ -270,6 +270,13 @@ Dann im Browser: <https://annikasoto.de> aufrufen, Impressum und Datenschutz
 
 ## Offene Punkte für Annika
 
+- **USt-IdNr. im Impressum nachtragen.** Die Preise sind auf
+  Regelbesteuerung umgestellt („Alle Preise zzgl. gesetzlicher MwSt.“), der
+  Abschnitt „Umsatzsteuer“ mit der Kleinunternehmerregelung ist deshalb aus
+  dem Impressum entfernt. Nach § 5 DDG ist die Umsatzsteuer-Identifikations-
+  nummer anzugeben, **sobald sie vorliegt** — dann bitte melden, der Abschnitt
+  ist schnell wieder drin.
+
 - **Vier AAAA-Einträge fehlen in Cloudflare.** Solange sie fehlen, geht
   GitHubs Domain-Prüfung nicht durch und die Zertifikatsanfrage startet nicht.
   Werte stehen in Schritt 2.
