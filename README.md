@@ -34,6 +34,7 @@ Zwei Landepunkte, je einer pro QR-Code:
 | --- | --- | --- |
 | `https://annikasoto.de/startseite-qr` | Startseite | allgemeiner Code |
 | `https://annikasoto.de/entwurf-qr` | Startseite, Abschnitt Entwurf | Code direkt aufs Formular |
+| `https://annikasoto.de/pakete-qr` | Startseite, Abschnitt Pakete | Code auf der Flyer-Rückseite |
 
 Beide leiten sofort weiter und hängen UTM-Parameter an. Der Umweg über einen
 eigenen Pfad hat einen Grund: Der Aufruf wird von Cloudflare gezählt, bevor
