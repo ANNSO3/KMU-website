@@ -370,3 +370,78 @@ textarea[aria-invalid="true"] { border-color: #B3261E !important; }
 
 /* --- Fokus --- */
 .f1:focus { border-color: #174EA6; }
+/* ---------------------------------------------------------------------------
+   ZUSATZ (nicht aus dem Design-Canvas): Raster für alle Bildschirmbreiten.
+
+   1. Mindestbreiten. Die Raster aus dem Entwurf verlangen je Spalte
+      240–300 px. Auf schmalen Handys (320–375 px) bleibt in Karten und
+      Kacheln weniger Platz, die Spalte lief dann über den Rand hinaus.
+      min(…, 100%) lässt sie stattdessen auf die verfügbare Breite schrumpfen.
+   2. Keine einzelnen Nachzügler. auto-fit bricht vier Karten bei manchen
+      Breiten in 3 + 1, drei Karten in 2 + 1 um. Hier stehen die Spalten
+      deshalb fest: vier Karten als 1, 2 oder 4 Spalten, drei Karten als
+      1 oder 3 Spalten – dazwischen überspannt die dritte Karte die Zeile.
+   --------------------------------------------------------------------------- */
+.s22, .s122 { grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); }
+.s31, .s84 { grid-template-columns: repeat(auto-fit, minmax(min(290px, 100%), 1fr)); }
+.s69, .s105 { grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); }
+.s76, .s124, .s137 { grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); }
+.s100 { grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); }
+.s113 { grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr)); }
+.s170 { grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); }
+
+/* Vier Karten: 1 → 2 → 4 Spalten */
+@media (max-width: 559px) { .s22, .s113 { grid-template-columns: 1fr; } }
+@media (min-width: 560px) { .s22, .s113 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .s22 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .s113 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+@media (max-width: 639px) { .s31 { grid-template-columns: 1fr; } }
+@media (min-width: 640px) { .s31 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1200px) { .s31 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+@media (max-width: 479px) { .s170 { grid-template-columns: 1fr; } }
+@media (min-width: 480px) { .s170 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 900px) { .s170 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* Drei Karten: 1 Spalte → 2 Spalten mit breiter dritter Karte → 3 Spalten */
+@media (max-width: 699px) { .s76, .s84, .s122 { grid-template-columns: 1fr; } }
+@media (min-width: 700px) and (max-width: 1023px) {
+  .s76, .s84, .s122 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .s76 > :nth-child(3), .s84 > :nth-child(3), .s122 > :nth-child(3) { grid-column: 1 / -1; }
+}
+@media (min-width: 1024px) { .s76, .s84, .s122 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* „Das komplette Setup": Überschrift + zwei Listen. Zweispaltig steht die
+   Überschrift über beiden Listen statt neben nur einer. */
+@media (max-width: 599px) { .s100 { grid-template-columns: 1fr; } }
+@media (min-width: 600px) and (max-width: 1023px) {
+  .s100 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .s100 > .s101 { grid-column: 1 / -1; max-width: none; }
+}
+@media (min-width: 1024px) { .s100 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* Knopf mit fester Inhaltsbreite: darf auf schmalen Handys umbrechen. */
+.s109 { max-width: 100%; box-sizing: border-box; }
+
+/* Die Referenzbilder sind 100 % breit plus 1 px Rahmen je Seite und standen
+   dadurch 2 px über. */
+.s55, .s59 { box-sizing: border-box; }
+
+/* Lange Einzelwörter (z. B. „Datenschutzerklärung") passen auf 320 px nicht
+   in eine Zeile. Nur auf schmalen Bildschirmen, damit am Desktop keine
+   Überschrift zusätzlich getrennt wird. */
+@media (max-width: 479px) {
+  .s16, .s29, .s52, .s71, .s106, .s120, .s126, .s135, .s155, .s178 {
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    overflow-wrap: break-word;
+  }
+}
+/* Der Kopf der Rechtstexte richtete seine Breite nach dem längsten Wort und
+   wurde dadurch breiter als der Bildschirm. Gestreckt nimmt er die
+   verfügbare Breite (höchstens 820 px), das Wort wird umbrochen. */
+.s177 { align-self: stretch; }
+/* Nicht jeder Browser trennt deutsch. Damit „Datenschutzerklärung" auf
+   320 px trotzdem ganz in eine Zeile passt, wird der Titel dort kleiner. */
+@media (max-width: 379px) { .s178 { font-size: 30px; } }
